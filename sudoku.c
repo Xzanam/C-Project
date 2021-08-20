@@ -10,7 +10,7 @@
 #define K 40
 
 int SRN,n;
-int arr[N][N], solved[N][N];
+int arr[N][N], solved[N][N], validij[40];
 
 int rndm(int);
 
@@ -21,6 +21,7 @@ void sudoku()
 }
 void print_matrix()
 {
+    system("clear");
     for(int i = 0; i < N; i++)
     {
         for(int j = 0; j < N; j++)
@@ -155,9 +156,13 @@ void print_solved()
         printf("\n");
     }
 }
+void check_input(int i, int j,int x )
+{
+    validij[x] = (i +1) * 10 + (j+1);
+}
 void remove_rnd_digits()
 {
-    int count = K;
+    int count = K, x=0;
     do
     {
         int cell_id = rndm(N*N)-1;
@@ -170,7 +175,10 @@ void remove_rnd_digits()
         {
             count--;
             arr[i][j] = 0;
+            check_input(i, j, x);
+            x += 1;
         } 
+
     }
     while(count != 0);
 }
@@ -184,24 +192,48 @@ void fill_values()
 
     remove_rnd_digits();//randomly remove digits to generate a sudoku;
 }
+bool invalid(int x)
+{
+    for(int i = 0; i < 40; i++)
+    {
+        if(x == validij[i])
+            return true;
+    }
+    return false;
+}
+void update_scr(int pos, int value){
+    int i,j;
+    i = pos/10 ;
+    j = pos % 10;
+    arr[i-1][j-1] = value;
+    print_matrix();
+
+}
 
 int main()
 {
-    char pos;
-    int a;
+    char ch;
+    int pos,value,boolean;
+
     system("clear");
     sudoku();
     fill_values();
     print_matrix();
+    for(int i = 0; i<40; i++)
+        printf("%d ", validij[i]);
     //print_solved();
-    printf("Your Input:");
-    scanf("%c%d",pos,a);
-    switch (a)
+    printf("Your Input:a-");
+    scanf("%d%d", &pos,&value);
+    boolean = invalid(pos);
+    switch (boolean)
     {
-    case 11:
-        
+    case 1:
+        update_scr(pos, value);
         break;
-    
+    case 0:
+        printf("a%d is permanent\n", pos);
+        break;
+   
     default:
         break;
     }
