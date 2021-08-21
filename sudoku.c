@@ -4,12 +4,13 @@
 #include <stdbool.h>
 #include <time.h>
 #include <ncurses.h>
+#include <unistd.h>
 
 //size of matrix N*N
 #define N 9
 #define K 40
 
-int SRN,n;
+int SRN,n, pos, value;
 int arr[N][N], solved[N][N], validij[40];
 
 int rndm(int);
@@ -26,7 +27,10 @@ void print_matrix()
     {
         for(int j = 0; j < N; j++)
         {
-            printf("%d ", arr[i][j]);
+            if(j == 0)
+                printf("%d ", arr[i][j]);
+            else
+                printf("%d ", arr[i][j]);
         }
         printf("\n");
     }
@@ -201,7 +205,7 @@ bool invalid(int x)
     }
     return false;
 }
-void update_scr(int pos, int value){
+void update_scr(){
     int i,j;
     i = pos/10 ;
     j = pos % 10;
@@ -210,28 +214,31 @@ void update_scr(int pos, int value){
 
 }
 
+
 int main()
 {
     char ch;
-    int pos,value,boolean;
+    int boolean;
 
     system("clear");
     sudoku();
     fill_values();
-    print_matrix();
-    for(int i = 0; i<40; i++)
-        printf("%d ", validij[i]);
     //print_solved();
-    printf("Your Input:a-");
-    scanf("%d%d", &pos,&value);
+    x:  
+    print_matrix();
+    printf("\nYour Input:a-");
+    scanf("%d%d", &pos, &value);
     boolean = invalid(pos);
     switch (boolean)
     {
     case 1:
-        update_scr(pos, value);
+        update_scr();
+        goto x;
         break;
     case 0:
         printf("a%d is permanent\n", pos);
+        sleep(1);
+        goto x;
         break;
    
     default:
