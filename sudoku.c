@@ -9,6 +9,7 @@
 //size of matrix N*N
 #define N 9
 #define K 40
+#define MAX_LEN 200
 
 int SRN,n, pos, value;
 int arr[N][N], solved[N][N], validij[40];
@@ -27,10 +28,7 @@ void print_matrix()
     {
         for(int j = 0; j < N; j++)
         {
-            if(j == 0)
-                printf("%d ", arr[i][j]);
-            else
-                printf("%d ", arr[i][j]);
+            printf("%d ", arr[i][j]);
         }
         printf("\n");
     }
@@ -211,6 +209,8 @@ int check(int p, int v)//p for pos, v for value
     int j = p % 10;
     int r;
     r = check_if_safe(i-1, j-1, v);
+    if(v >= 10)
+        return 2;
     return r;
 }
 
@@ -222,6 +222,10 @@ void update_scr(){
     {
         arr[i-1][j-1] = value;
         print_matrix();
+    }
+    else if(check(pos, value)== 2)
+    {
+        printf("Go through the game rules again please!");
     }
     else
     {
@@ -258,6 +262,58 @@ void user_prompt()
     }
     
 }
+void print_title(FILE *fptr)
+{
+    char read_string[MAX_LEN];
+
+    while(fgets(read_string,sizeof(read_string),fptr) != NULL)
+        printf("%s",read_string);
+}
+void interface()
+{
+    char ch;
+    int op;
+    printf("1.Start a Game\n");
+    printf("2.Continue Where You left\n");
+    printf("3.How to Play\n");
+    printf("Option:");
+    scanf("%d", &op);
+    switch (op)
+    {
+    case 1:
+        print_matrix();
+        user_prompt();
+        break;
+    case 2:
+        printf("You picked 2");
+        break;
+    case 3:
+        printf("You picked 3");
+        break;
+    
+    default:
+        printf("That option isn't available"); 
+        break;
+    }
+}
+int menu(){
+    system("clear");
+    char *filename = "title.txt";
+    FILE *fptr = NULL;
+
+    if((fptr = fopen(filename,"r")) == NULL)
+    {
+        fprintf(stderr,"Error printing title! %s\n",filename);
+        return 1;
+    }
+
+    print_title(fptr);
+    fclose(fptr);
+    interface();
+
+
+    return 0;
+}
 
 
 int main()
@@ -266,8 +322,8 @@ int main()
     sudoku();
     fill_values();
     //print_solved();
-    print_matrix();
-    user_prompt();
+    menu();
+   
 
     return 0;
 }
