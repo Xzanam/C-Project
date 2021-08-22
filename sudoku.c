@@ -196,54 +196,79 @@ void fill_values()
 
     remove_rnd_digits();//randomly remove digits to generate a sudoku;
 }
-bool invalid(int x)
+int invalid(int x)
 {
     for(int i = 0; i < 40; i++)
     {
-        if(x == validij[i])
-            return true;
+        if(x == validij[i]) //validij is the postion of all 0s
+            return 1;
     }
-    return false;
+    return 0;
 }
+int check(int p, int v)//p for pos, v for value 
+{
+    int i = p / 10;
+    int j = p % 10;
+    int r;
+    r = check_if_safe(i-1, j-1, v);
+    return r;
+}
+
 void update_scr(){
     int i,j;
     i = pos/10 ;
     j = pos % 10;
-    arr[i-1][j-1] = value;
-    print_matrix();
+    if(check(pos, value) == 1)//row, column and box check)
+    {
+        arr[i-1][j-1] = value;
+        print_matrix();
+    }
+    else
+    {
+        printf("Already in row or column or box");
+    }
+    
 
 }
 
-
-int main()
+void user_prompt()
 {
-    char ch;
     int boolean;
-
-    system("clear");
-    sudoku();
-    fill_values();
-    //print_solved();
-    x:  
-    print_matrix();
+    x:
     printf("\nYour Input:a-");
     scanf("%d%d", &pos, &value);
     boolean = invalid(pos);
     switch (boolean)
     {
-    case 1:
-        update_scr();
-        goto x;
-        break;
-    case 0:
-        printf("a%d is permanent\n", pos);
-        sleep(1);
-        goto x;
-        break;
-   
-    default:
-        break;
+        case 1:
+            update_scr();
+            goto x;
+            break;
+        case 0:
+            printf("a%d is permanent\n", pos);
+            sleep(1);
+            goto x;
+            break;
+    
+        default:
+            printf("Can't understand that input\n");
+            sleep(1);
+            goto x;
+            break;
     }
+    
+}
+
+
+int main()
+{
+    system("clear");
+    sudoku();
+    fill_values();
+    //print_solved();
+    print_matrix();
+    user_prompt();
+
     return 0;
 }
 
